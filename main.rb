@@ -24,14 +24,12 @@ def intersperse(xs, v)
 end
 
 def split(expr)
-  components = [expr]
-  $operators.each do |operator|
-    components = components.flat_map do |e|
+  $operators.reduce([expr]) do |components, operator|
+    components.flat_map do |e|
       operands = e.split(operator)
       intersperse(operands, operator)
     end
   end
-  components
 end
 
 def to_rpn(expr)
