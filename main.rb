@@ -85,7 +85,8 @@ def evaluate(expr)
   evaluations.pop # the result
 end
 
-# puts 'Enter a math expression: '
-expression = '2*3-12/4'
-
-puts evaluate expression
+if __FILE__ == $0
+  print "Enter a math expression:"
+  expression = gets.chomp
+  puts evaluate expression
+end
