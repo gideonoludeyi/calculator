@@ -23,7 +23,7 @@ def intersperse(xs, v)
   arr
 end
 
-def split(expr)
+def split_by_operators(expr)
   $operators.reduce([expr]) do |components, operator|
     components.flat_map do |e|
       operands = e.split(operator)
@@ -71,7 +71,7 @@ end
 
 def evaluate(expr)
   evaluations = []
-  rpn = to_rpn(split(expr)) # reverse polish notation
+  rpn = to_rpn(split_by_operators(expr)) # reverse polish notation
   rpn.each do |o|
     if $operators.include? o # operator
       first = evaluations.pop # most recent evaluated value
