@@ -1,50 +1,5 @@
 $operators = %w[+ - * /]
 
-class Stack
-  def push(item)
-    @top = Node.new(item, @top)
-  end
-
-  def pop
-    item = @top.item
-    @top = @top.next
-    item
-  end
-
-  def top
-    @top&.item
-  end
-
-  def empty
-    @top.nil?
-  end
-
-  def each
-    node = @top
-    until node.nil?
-      yield node.item
-      node = node.next
-    end
-  end
-
-  def to_s
-    s = ''
-    each do |x|
-      s += "#{x} "
-    end
-    "[#{s.strip}]"
-  end
-
-  class Node
-    attr_accessor :item, :next
-
-    def initialize(item, node)
-      @item = item
-      @next = node
-    end
-  end
-end
-
 def priority(char)
   case char
   when '*', '/'
@@ -81,14 +36,13 @@ end
 
 def to_rpn(expr)
   expr += ['#']
-  ops = Stack.new
-  ops.push('$')
+  ops = ['$']
 
   postfix = []
   p = 0
   expr.each do |s|
     if $operators.include?(s) or s.eql?('#')
-      until priority(s) > priority(ops.top)
+      until priority(s) > priority(ops.last)
         postfix[p] = ops.pop
         p += 1
       end
@@ -118,20 +72,19 @@ def apply(op, x, y)
 end
 
 def evaluate(expr)
-  stack = Stack.new
+  evaluations = []
   rpn = to_rpn(split(expr)) # reverse polish notation
   rpn.each do |o|
     if $operators.include? o # operator
-      first = stack.pop # most recent
-      second = stack.pop # second recent
-      stack.push(apply(o, second, first))
+      first = evaluations.pop # most recent evaluated value
+      second = evaluations.pop # second most recent evaluated value
+      evaluations.push(apply(o, second, first))
     else
       # operand
-      stack.push(o.to_f)
+      evaluations.push(o.to_f)
     end
   end
-
-  stack.pop # the result
+  evaluations.pop # the result
 end
 
 # puts 'Enter a math expression: '
