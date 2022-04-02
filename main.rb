@@ -1,7 +1,9 @@
-$operators = %w[+ - * /]
+$operators = %w[+ - * / ^]
 
 def priority(char)
   case char
+  when '^'
+    3
   when '*', '/'
     2
   when '+', '-'
@@ -64,6 +66,8 @@ def apply(op, x, y)
     x * y
   when '/'
     x / y
+  when '^'
+    x ** y
   else
     throw "Invalid operator"
   end
